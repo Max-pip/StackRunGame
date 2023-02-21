@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 2212330814187013580}
   m_Layer: 0
   m_Name: CubePickup
-  m_TagString: RidingBoat
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

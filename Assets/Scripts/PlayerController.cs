@@ -5,21 +5,26 @@ using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
-    public float limitX;
-    public float xSpeed;
-    public float runningSpeed;
+    [Header("Player`s settings")]
+    [SerializeField] private float limitX;
+    [SerializeField] private float xSpeed;
+    [SerializeField] private float runningSpeed;
 
-    public GameObject ridingBoatPrefab;
+    [SerializeField] private GameObject ridingBoatPrefab;
 
-    public List<RidingBoat> boats;    // list of Boat
+    [SerializeField] private GameObject _cubePickupEffect;
 
-    public Rigidbody m_Rigidbody;  // reference to the rigidbody
+    [SerializeField] private UnityEvent _dead;
+
+    public List<RidingCube> cubes;
 
     private bool _canMoved;
 
     private PlayerAnimation _animPlayer;
 
-    [SerializeField] private UnityEvent _dead;
+    //For Input
+    private float newX;
+    private float touchXDelta = 0;
 
     private void Awake()
     {
@@ -36,26 +41,24 @@ public class PlayerController : MonoBehaviour
     {
         if (_canMoved)
         {
+#if UNITY_EDITOR
             PlayerControl();
+#endif
+
+#if UNITY_ANDROID
+            PlayerControlMobile();
+#endif
         }
     }
 
-    public void AddBoatStart()   // add boat method
+    public void AddBoatStart() 
     {
         IncrementBoatVolume(1f);
-        //anim.SetTrigger("idle");
     }
 
-    private void PlayerControl()        // control the player
+    private void PlayerControl()
     {
-        float newX;
-        float touchXDelta = 0;
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
-        {
-
-            touchXDelta = Input.GetTouch(0).deltaPosition.x;
-        }
-        else if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0))
         {
             touchXDelta = Input.GetAxis("Mouse X");
         }
@@ -67,29 +70,44 @@ public class PlayerController : MonoBehaviour
         transform.position = newPosition;
     }
 
+    private void PlayerControlMobile()
+    {
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
+        {
+
+            touchXDelta = Input.GetTouch(0).deltaPosition.x;
+        }
+
+        newX = transform.position.x + xSpeed * touchXDelta * Time.deltaTime;
+        newX = Mathf.Clamp(newX, -limitX, limitX);
+
+        Vector3 newPosition = new Vector3(newX, transform.position.y, transform.position.z + runningSpeed * Time.deltaTime);
+        transform.position = newPosition;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "PickCube")      // when the player colided with tho boat
+        if (other.tag == "PickCube") 
         {
-            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + 0.2f, transform.localPosition.z);
-            IncrementBoatVolume(1f);   // increase Boat Volume By 1
-            Destroy(other.gameObject);    // destroy the boat
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + 0.3f, transform.localPosition.z);
+            GameObject pickupEffect = (GameObject)Instantiate(_cubePickupEffect, transform.position, transform.rotation);
+            Destroy(pickupEffect, 1f);
+            IncrementBoatVolume(1f);  
+            Destroy(other.gameObject);    
 
         }
-        if (other.tag == "Wall")   // when the player colided with the Obstacles
+        if (other.tag == "Wall")   
         {
-            IncrementBoatVolume(-1f);   // decrease boat volume by 1
-            if (boats.Count == 0)
+            IncrementBoatVolume(-1f);  
+            if (cubes.Count == 0)
             {
                 _canMoved = false;
                 _dead?.Invoke();
-                //GameManager.instance.LoseGame();   // if the boat count equal O lose the game
-
             }
         }
     }
 
-    public void IncrementBoatVolume(float value)       // increment boat volume method
+    public void IncrementBoatVolume(float value)
     {
         _animPlayer.Jump();
         if (value > 0)
@@ -97,25 +115,25 @@ public class PlayerController : MonoBehaviour
             CreateBoat(value);
         }
 
-        else if (value < 0 && boats.Count != 0)
+        else if (value < 0 && cubes.Count != 0)
         {
-            boats[boats.Count - 1].IncerementCubeVolume(value);
+            cubes[cubes.Count - 1].IncerementCubeVolume(value);
         }
 
     }
 
-    public void CreateBoat(float value)      // creat boat method
+    public void CreateBoat(float value)
     {
-        RidingBoat createdBoat = Instantiate(ridingBoatPrefab, transform).GetComponent<RidingBoat>();    // instantiat the boat for player
+        RidingCube createdBoat = Instantiate(ridingBoatPrefab, transform).GetComponent<RidingCube>(); 
 
-        boats.Add(createdBoat);
+        cubes.Add(createdBoat);
         createdBoat.IncerementCubeVolume(value);
 
     }
 
-    public void DropBoats(RidingBoat boat) // when remove tho boat
+    public void DropBoats(RidingCube boat)
     {
-        boats.Remove(boat);
+        cubes.Remove(boat);
         boat.gameObject.transform.parent = null;
 
     }
