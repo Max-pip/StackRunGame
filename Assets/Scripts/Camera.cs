@@ -14,4 +14,9 @@ public class Camera : MonoBehaviour
         transform.position = smoothPosition;
         //transform.LookAt(_object.transform.position); //Camera will look(returns) to the object
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Destroy(other.gameObject);
+    }
 }

@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
 
     private bool _canMoved;
 
-    [SerializeField] private PlayerAnimation _animPlayer;
+    private PlayerAnimation _animPlayer;
 
     [SerializeField] private UnityEvent _dead;
 
@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.tag == "PickCube")      // when the player colided with tho boat
         {
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + 0.2f, transform.localPosition.z);
             IncrementBoatVolume(1f);   // increase Boat Volume By 1
             Destroy(other.gameObject);    // destroy the boat
 
