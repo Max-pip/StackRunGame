@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
 
     public Rigidbody m_Rigidbody;  // reference to the rigidbody
 
-    public bool isPlayerControlActive = true;
+    private bool _canMoved;
 
     [SerializeField] private PlayerAnimation _animPlayer;
 
@@ -27,9 +27,14 @@ public class PlayerController : MonoBehaviour
         AddBoatStart();
     }
 
-    void FixedUpdate()
+    private void Start()
     {
-        if (isPlayerControlActive)
+        _canMoved = true;
+    }
+
+    void Update()
+    {
+        if (_canMoved)
         {
             PlayerControl();
         }
@@ -75,6 +80,7 @@ public class PlayerController : MonoBehaviour
             IncrementBoatVolume(-1f);   // decrease boat volume by 1
             if (boats.Count == 0)
             {
+                _canMoved = false;
                 _dead?.Invoke();
                 //GameManager.instance.LoseGame();   // if the boat count equal O lose the game
 
