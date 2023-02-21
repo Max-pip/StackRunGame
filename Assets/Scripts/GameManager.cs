@@ -26,11 +26,11 @@ public class GameManager : MonoBehaviour
 
     private void SwipeToStart()     // swip method to control the player
     {
-        if (!isSwipeToStart && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
+        if (/*!isSwipeToStart && */Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
         {
             StartGame();
         }
-        else if (!isSwipeToStart && Input.GetMouseButton(0))
+        else if (/*!isSwipeToStart &&*/ Input.GetMouseButton(0))
         {
             StartGame();
         }

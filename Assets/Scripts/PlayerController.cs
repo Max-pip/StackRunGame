@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,8 +17,13 @@ public class PlayerController : MonoBehaviour
 
     public bool isPlayerControlActive = true;
 
+    [SerializeField] private PlayerAnimation _animPlayer;
+
+    [SerializeField] private UnityEvent _dead;
+
     private void Awake()
     {
+        _animPlayer = GetComponentInChildren<PlayerAnimation>();
         AddBoatStart();
     }
 
@@ -69,7 +75,8 @@ public class PlayerController : MonoBehaviour
             IncrementBoatVolume(-1f);   // decrease boat volume by 1
             if (boats.Count == 0)
             {
-                GameManager.instance.LoseGame();   // if the boat count equal O lose the game
+                _dead?.Invoke();
+                //GameManager.instance.LoseGame();   // if the boat count equal O lose the game
 
             }
         }
@@ -77,7 +84,7 @@ public class PlayerController : MonoBehaviour
 
     public void IncrementBoatVolume(float value)       // increment boat volume method
     {
-
+        _animPlayer.Jump();
         if (value > 0)
         {
             CreateBoat(value);
