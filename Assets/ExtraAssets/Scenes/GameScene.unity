@@ -1523,12 +1523,12 @@ PrefabInstance:
     - target: {fileID: 6735530148522020577, guid: d9ce45b6decb1724584923dfb9761356,
         type: 3}
       propertyPath: xSpeed
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6735530148522020577, guid: d9ce45b6decb1724584923dfb9761356,
         type: 3}
       propertyPath: runningSpeed
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6735530148522020577, guid: d9ce45b6decb1724584923dfb9761356,
         type: 3}

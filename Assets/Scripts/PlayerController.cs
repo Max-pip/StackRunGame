@@ -22,10 +22,6 @@ public class PlayerController : MonoBehaviour
 
     private PlayerAnimation _animPlayer;
 
-    //For Input
-    private float newX;
-    private float touchXDelta = 0;
-
     private void Awake()
     {
         _animPlayer = GetComponentInChildren<PlayerAnimation>();
@@ -56,12 +52,21 @@ public class PlayerController : MonoBehaviour
         IncrementBoatVolume(1f);
     }
 
-    private void PlayerControl()
+    private void PlayerControl()        // control the player
     {
-        if (Input.GetMouseButton(0))
+        float newX;
+        float touchXDelta = 0;
+        /*if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
+        {
+
+            touchXDelta = Input.GetTouch(0).deltaPosition.x;
+        }
+        
+        else*/ if (Input.GetMouseButton(0))
         {
             touchXDelta = Input.GetAxis("Mouse X");
         }
+        
 
         newX = transform.position.x + xSpeed * touchXDelta * Time.deltaTime;
         newX = Mathf.Clamp(newX, -limitX, limitX);
@@ -72,6 +77,9 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerControlMobile()
     {
+        float newX;
+        float touchXDelta = 0;
+
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
         {
 

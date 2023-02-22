@@ -16,16 +16,30 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+#if UNITY_EDITOR
         SwipeToStart();
+#endif
+
+#if UNITY_ANDROID
+        SwipeToStartMobile();
+#endif
     }
 
     private void SwipeToStart()
     {
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
+        /*if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
         {
             StartGame();
         }
-        else if (Input.GetMouseButton(0))
+        else*/ if (Input.GetMouseButton(0))
+        {
+            StartGame();
+        }
+    }
+
+    private void SwipeToStartMobile()
+    {
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
         {
             StartGame();
         }
